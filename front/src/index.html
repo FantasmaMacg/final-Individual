@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - Cliente</title>
+    <title>Mi Tienda - Comprar Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- FontAwesome for cart icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-  
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="#">Mi Tienda</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -17,38 +19,183 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">Inicio</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#productos">Productos</a>
                     </li>
+                    <li class="nav-item" id="gerente-nav" style="display: none;">
+                        <a class="nav-link" href="#gerente-section">Panel Gerente</a>
+                    </li>
                 </ul>
+                <button id="login-btn" class="btn btn-outline-light ms-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    Iniciar Sesión
+                </button>
+                <!-- Cart Icon -->
+                <button id="cart-btn" class="btn btn-outline-light ms-3" data-bs-toggle="modal" data-bs-target="#verCestaModal">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count" class="badge bg-danger rounded-pill">0</span>
+                </button>
             </div>
         </div>
     </nav>
-
-   
-    <div id="productos" class="container mt-5">
-        <h2 class="my-5 text-center">Nuestros Productos</h2>
-        <table id="productos-table" class="table table-bordered">
-            <thead class="table-light">
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>Cantidad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-               
-            </tbody>
-        </table>
+    <div class="container mt-3">
+        <div id="alerta" class="alert d-none" role="alert"></div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="javascript/cliente.js"></script>
+    <!-- Modal de inicio de sesión -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Iniciar Sesión - Gerente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-login">
+                        <div class="mb-3">
+                            <label for="codigo" class="form-label">Código de Gerente:</label>
+                            <input type="password" id="codigo" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+                        <div id="error-message" class="mt-2 text-danger" style="display:none;">Código incorrecto. Inténtalo de nuevo.</div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de productos -->
+    <div id="productos" class="container mt-5">
+        <h2 class="my-5 text-center">Nuestros Productos</h2>
+        <div class="row" id="productos-lista">
+            <!-- Los productos se generarán dinámicamente aquí -->
+        </div>
+    </div>
+
+    <!-- Panel del gerente -->
+    <div id="gerente-section" class="container mt-5" style="display: none;">
+        <h2 class="text-center">Añadir Nuevo Producto</h2>
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">
+            Nuevo Producto
+        </button>
+    </div>
+
+    <!-- Modal para añadir nuevo producto -->
+    <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nuevoProductoModalLabel">Añadir Nuevo Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-nuevo-producto">
+                        <div class="mb-3">
+                            <label for="nuevo-nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nuevo-nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nuevo-descripcion" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="nuevo-descripcion" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nuevo-precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="nuevo-precio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="nuevo-cantidad" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="nuevo-cantidad" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarNuevoProducto()">Guardar Producto</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para ver la cesta -->
+    <div class="modal fade" id="verCestaModal" tabindex="-1" aria-labelledby="verCestaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="verCestaModalLabel">Tu Cesta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="cesta-lista">
+                        <!-- Los productos de la cesta se cargarán aquí -->
+                    </div>
+                    <p id="total-cesta" class="text-end"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Finalizar Compra</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar producto -->
+    <div class="modal fade" id="editar-modal" tabindex="-1" aria-labelledby="editar-modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editar-modalLabel">Editar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="form-editar-producto">
+                        <div class="mb-3">
+                            <label for="editar-nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="editar-nombre" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editar-descripcion" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="editar-descripcion" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editar-precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="editar-precio" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editar-cantidad" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control" id="editar-cantidad" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary" onclick="guardarEdicionProducto()">Guardar cambios</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para eliminar producto -->
+    <div class="modal fade" id="eliminar-modal" tabindex="-1" aria-labelledby="eliminar-modalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminar-modalLabel">Eliminar Producto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>¿Estás seguro de que deseas eliminar este producto?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-danger" onclick="eliminarProducto()">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.min.js"></script>
+
+    <script src="javascript/app.js"></script>
 </body>
 </html>
