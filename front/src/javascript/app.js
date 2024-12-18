@@ -39,33 +39,65 @@ $(document).ready(function () {
     });
 });
 
-function agregarACesta(id) {
-    const producto = productos.find(p => p.id === id);
+async function agregarACesta(id) {
+    
+    const response = await fetch(`/api/productos/${id}`);
+    const producto = await response.json();  
+
+    if (!producto) {
+        mostrarAlerta("El producto no existe o hubo un error al cargar la información.", "danger");
+        return;
+    }
+
     const productoEnCesta = cesta.find(p => p.id === id);
 
     if (productoEnCesta) {
+        // Si el producto ya está en la cesta, comprobamos si se puede añadir más
         if (productoEnCesta.cantidad < producto.cantidad) {
-            productoEnCesta.cantidad += 1;
+            productoEnCesta.cantidad += 1;  // Añadimos una unidad más
         } else {
             mostrarAlerta("No puedes añadir más productos de los que hay en stock.", "warning");
-            return; 
+            return;  // Si no hay suficiente stock, no añadimos más
         }
     } else {
+        // Si el producto no está en la cesta, verificamos si hay stock disponible
         if (producto.cantidad > 0) {
-            cesta.push({ ...producto, cantidad: 1 });
+            cesta.push({ ...producto, cantidad: 1 });  // Añadimos el producto a la cesta con cantidad 1
         } else {
             mostrarAlerta("Este producto está agotado.", "danger");
-            return;
+            return;  // Si no hay stock, no lo añadimos
         }
     }
+    
 
+    // Ahora que hemos comprobado el stock, lo actualizamos en la cesta y en el frontend
     producto.cantidad -= 1;
+
+    // Realizar la solicitud POST al backend
+    try {
+        const response = await fetch(`api/productos/${producto.id}/añadir-cesta`, {
+            method: "POST",
+        });
+
+        if (response.ok) {
+            mostrarAlerta("Producto añadido a la cesta.", "success");
+        } else {
+            mostrarAlerta("Error al añadir el producto a la cesta.", "danger");
+        }
+    } catch (error) {
+        console.error("Error al actualizar la cesta en el backend:", error);
+        mostrarAlerta("Error al añadir el producto a la cesta.", "danger");
+    }
+
     actualizarCesta();
     actualizarContadorCesta();
-    mostrarAlerta("Producto añadido a la cesta.", "success");
-
-    
+    mostrarAlerta("Producto añadido a la cesta.", "success");  // Mostramos mensaje de éxito
 }
+
+
+
+
+
 
 
 
@@ -147,7 +179,7 @@ function mostrarAlerta(mensaje, tipo) {
 
 async function cargarProductos() {
     try {
-        const response = await fetch("http://localhost:8080/productos");
+        const response = await fetch("api/productos");
         productos = await response.json(); 
 
         const $productosLista = $("#productos-lista");
@@ -198,7 +230,7 @@ async function cargarProductos() {
 
 async function comprarProducto(id) {
     try {
-        const response = await fetch(`http://localhost:8080/productos/${id}/compra`, { method: "POST" });
+        const response = await fetch(`api/productos/${id}/compra`, { method: "POST" });
         if (response.ok) {
             mostrarAlerta("Compra realizada con éxito.", "success");
             cargarProductos();
@@ -217,7 +249,7 @@ async function comprarTodo() {
     const idsProductos = cesta.map(p => p.id);
 
     try {
-        const response = await fetch("http://localhost:8080/productos/cesta/comprar", {
+        const response = await fetch("api/productos/cesta/comprar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ids: idsProductos }),
@@ -226,6 +258,7 @@ async function comprarTodo() {
         if (response.ok) {
             mostrarAlerta("Compra de todos los productos realizada con éxito.", "success");
 
+            // Vaciar la cesta después de la compra
             cesta = [];
             actualizarCesta();
             actualizarContadorCesta();
@@ -241,6 +274,7 @@ async function comprarTodo() {
 }
 
 
+
 async function añadirProducto() {
     const nombre = $("#nuevo-nombre").val();
     const descripcion = $("#nuevo-descripcion").val();
@@ -249,7 +283,7 @@ async function añadirProducto() {
 
     if (nombre && descripcion && !isNaN(precio) && !isNaN(cantidad)) {
         try {
-            const response = await fetch("http://localhost:8080/productos", {
+            const response = await fetch("api/productos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombre, descripcion, precio, cantidad }),
@@ -275,7 +309,7 @@ async function añadirProducto() {
 
 async function obtenerProducto(id) {
     try {
-        const response = await fetch(`http://localhost:8080/productos/${id}`);
+        const response = await fetch(`api/productos/${id}`);
         const producto = await response.json();
 
         $("#editar-nombre").val(producto.nombre);
@@ -289,6 +323,7 @@ async function obtenerProducto(id) {
 }
 
 
+
 async function editarProducto() {
     const id = $("#editar-modal").data("id");
     const nombre = $("#editar-nombre").val();
@@ -298,7 +333,7 @@ async function editarProducto() {
 
     if (nombre && descripcion && !isNaN(precio) && !isNaN(cantidad)) {
         try {
-            const response = await fetch(`http://localhost:8080/productos/${id}`, {
+            const response = await fetch(`api/productos/${id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ nombre, descripcion, precio, cantidad }),
@@ -320,11 +355,12 @@ async function editarProducto() {
 }
 
 
+
 async function eliminarProducto() {
     const id = $("#eliminar-modal").data("id");
 
     try {
-        const response = await fetch(`http://localhost:8080/productos/${id}`, {
+        const response = await fetch(`api/productos/${id}`, {
             method: "DELETE",
         });
 
