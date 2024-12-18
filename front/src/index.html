@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
         <div class="container">
-            <a class="navbar-brand" href="#">Mi Tienda</a>
+            <a class="navbar-brand" href="#">M A C G Componentes Informáticos: Soluciones de Tecnología a tu Medida </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -39,6 +39,13 @@
     </nav>
     <div class="container mt-3">
         <div id="alerta" class="alert d-none" role="alert"></div>
+    </div>
+
+    <div id="gerente-section" class="container mt-5" style="display: none;">
+        <h2 class="text-center">Añadir Nuevo Producto</h2>
+        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">
+            Nuevo Producto
+        </button>
     </div>
 
     <!-- Modal de inicio de sesión -->
@@ -72,12 +79,7 @@
     </div>
 
     <!-- Panel del gerente -->
-    <div id="gerente-section" class="container mt-5" style="display: none;">
-        <h2 class="text-center">Añadir Nuevo Producto</h2>
-        <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#nuevoProductoModal">
-            Nuevo Producto
-        </button>
-    </div>
+   
 
     <!-- Modal para añadir nuevo producto -->
     <div class="modal fade" id="nuevoProductoModal" tabindex="-1" aria-labelledby="nuevoProductoModalLabel" aria-hidden="true">
@@ -98,18 +100,22 @@
                             <input type="text" class="form-control" id="nuevo-descripcion" required>
                         </div>
                         <div class="mb-3">
-                            <label for="nuevo-precio" class="form-label">Precio</label>
-                            <input type="number" class="form-control" id="nuevo-precio" required>
+                            <label for="editar-precio" class="form-label">Precio</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control text-end" id="editar-precio" required>
+                                <span class="input-group-text">€</span>
+                            </div>
                         </div>
                         <div class="mb-3">
-                            <label for="nuevo-cantidad" class="form-label">Cantidad</label>
-                            <input type="number" class="form-control" id="nuevo-cantidad" required>
+                            <label for="editar-cantidad" class="form-label">Cantidad</label>
+                            <input type="number" class="form-control text-end" id="editar-cantidad" required>
                         </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarNuevoProducto()">Guardar Producto</button>
+                    <button type="button" class="btn btn-primary" onclick="añadirProducto()">Guardar Producto</button>
                 </div>
             </div>
         </div>
@@ -157,17 +163,21 @@
                         </div>
                         <div class="mb-3">
                             <label for="editar-precio" class="form-label">Precio</label>
-                            <input type="number" class="form-control" id="editar-precio" required>
+                            <div class="input-group">
+                                <input type="number" class="form-control text-end" id="editar-precio" required>
+                                <span class="input-group-text">€</span>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="editar-cantidad" class="form-label">Cantidad</label>
-                            <input type="number" class="form-control" id="editar-cantidad" required>
+                            <input type="number" class="form-control text-end" id="editar-cantidad" required>
                         </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    <button type="button" class="btn btn-primary" onclick="guardarEdicionProducto()">Guardar cambios</button>
+                    <button type="button" class="btn btn-primary" onclick="editarProducto()">Guardar cambios</button>
                 </div>
             </div>
         </div>
