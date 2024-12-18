@@ -244,8 +244,8 @@ async function comprarTodo() {
 async function añadirProducto() {
     const nombre = $("#nuevo-nombre").val();
     const descripcion = $("#nuevo-descripcion").val();
-    const precio = parseFloat($("#nuevo-precio").val());
-    const cantidad = parseInt($("#nuevo-cantidad").val());
+    const precio = parseFloat($("#editar-precios").val());
+    const cantidad = parseInt($("#editar-cantidades").val());
 
     if (nombre && descripcion && !isNaN(precio) && !isNaN(cantidad)) {
         try {
