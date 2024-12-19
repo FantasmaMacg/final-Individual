@@ -1,48 +1,63 @@
 const GERENTE_CODIGO = "12345";
 let cesta = [];
-let productos = []; 
+let productos = [];
+const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+let mostrarModal = true;
 
 $(document).ready(function () {
     $("#gerente-section").hide();
 
-    
+    $("#login-btn").on("click", function (event) {
+
+        if (mostrarModal) {
+            loginModal.show();
+
+        } else {
+            $("#login-section").show();
+            $("#gerente-section").hide();
+            mostrarAlerta("Sesión cerrada correctamente.", "success");
+            cargarProductos();
+            document.getElementById("login-btn").textContent = "Iniciar Sesión";
+            mostrarModal = true;
+        }
+    });
+
     $("#form-login").on("submit", function (event) {
         event.preventDefault();
         iniciarSesion();
     });
 
-    
     $("#form-nuevo-producto").on("submit", function (event) {
         event.preventDefault();
         añadirProducto();
     });
 
-    cargarProductos(); 
+    cargarProductos();
 
-    
+
     $("#editar-modal").on("show.bs.modal", function (event) {
-        const button = $(event.relatedTarget); 
-        const productoId = button.data("id"); 
+        const button = $(event.relatedTarget);
+        const productoId = button.data("id");
         obtenerProducto(productoId);
         $("#editar-modal").data("id", productoId);
     });
-    
+
     $("#eliminar-modal").on("show.bs.modal", function (event) {
-        const button = $(event.relatedTarget); 
-        const productoId = button.data("id"); 
+        const button = $(event.relatedTarget);
+        const productoId = button.data("id");
         $("#eliminar-modal").data("id", productoId);
     });
 
-    
+
     $("#comprartodo").on("click", function () {
         comprarTodo();
     });
 });
 
 async function agregarACesta(id) {
-    
+
     const response = await fetch(`/api/productos/${id}`);
-    const producto = await response.json();  
+    const producto = await response.json();
 
     if (!producto) {
         mostrarAlerta("El producto no existe o hubo un error al cargar la información.", "danger");
@@ -52,28 +67,28 @@ async function agregarACesta(id) {
     const productoEnCesta = cesta.find(p => p.id === id);
 
     if (productoEnCesta) {
-        // Si el producto ya está en la cesta, comprobamos si se puede añadir más
+
         if (productoEnCesta.cantidad < producto.cantidad) {
-            productoEnCesta.cantidad += 1;  // Añadimos una unidad más
+            productoEnCesta.cantidad += 1;
         } else {
             mostrarAlerta("No puedes añadir más productos de los que hay en stock.", "warning");
-            return;  // Si no hay suficiente stock, no añadimos más
+            return;
         }
     } else {
-        // Si el producto no está en la cesta, verificamos si hay stock disponible
+
         if (producto.cantidad > 0) {
-            cesta.push({ ...producto, cantidad: 1 });  // Añadimos el producto a la cesta con cantidad 1
+            cesta.push({ ...producto, cantidad: 1 });
         } else {
             mostrarAlerta("Este producto está agotado.", "danger");
-            return;  // Si no hay stock, no lo añadimos
+            return;
         }
     }
-    
 
-    // Ahora que hemos comprobado el stock, lo actualizamos en la cesta y en el frontend
+
+
     producto.cantidad -= 1;
 
-    // Realizar la solicitud POST al backend
+
     try {
         const response = await fetch(`api/productos/${producto.id}/añadir-cesta`, {
             method: "POST",
@@ -91,15 +106,8 @@ async function agregarACesta(id) {
 
     actualizarCesta();
     actualizarContadorCesta();
-    mostrarAlerta("Producto añadido a la cesta.", "success");  // Mostramos mensaje de éxito
+    mostrarAlerta("Producto añadido a la cesta.", "success");
 }
-
-
-
-
-
-
-
 
 function actualizarCesta() {
     const $cestaLista = $("#cesta-lista");
@@ -129,13 +137,10 @@ function actualizarCesta() {
     }
 }
 
-
-
 function actualizarContadorCesta() {
     const totalArticulos = cesta.reduce((total, producto) => total + producto.cantidad, 0);
     $("#cart-count").text(totalArticulos);
 }
-
 
 function eliminarDeCesta(id) {
     cesta = cesta.filter(p => p.id !== id);
@@ -148,42 +153,47 @@ function iniciarSesion() {
     const codigo = $("#codigo").val();
 
     if (codigo === GERENTE_CODIGO) {
+
+
         $("#login-section").hide();
         $("#gerente-section").show();
         mostrarAlerta("Sesión iniciada correctamente como gerente.", "success");
-        cargarProductos(); 
+        cargarProductos();
+        mostrarModal = false;
+
+
+        document.getElementById("login-btn").textContent = "Cerrar";
+
+
     } else {
         mostrarAlerta("Código incorrecto. Intenta nuevamente.", "danger");
     }
 }
 
-
 function mostrarAlerta(mensaje, tipo) {
     const alerta = $("#alerta");
 
-    
-    alerta.text(mensaje);
-    alerta.removeClass("alert-success alert-danger alert-warning alert-info"); 
-    alerta.addClass(`alert-${tipo}`); 
 
-    
+    alerta.text(mensaje);
+    alerta.removeClass("alert-success alert-danger alert-warning alert-info");
+    alerta.addClass(`alert-${tipo}`);
+
+
     alerta.removeClass("d-none");
-    
-    
+
+
     setTimeout(() => {
         alerta.addClass("d-none");
     }, 3000);
 }
 
-
-
 async function cargarProductos() {
     try {
         const response = await fetch("api/productos");
-        productos = await response.json(); 
+        productos = await response.json();
 
         const $productosLista = $("#productos-lista");
-        $productosLista.empty(); 
+        $productosLista.empty();
 
         productos.forEach((producto) => {
             const accionesCliente = producto.cantidad > 0
@@ -227,7 +237,6 @@ async function cargarProductos() {
     }
 }
 
-
 async function comprarProducto(id) {
     try {
         const response = await fetch(`api/productos/${id}/compra`, { method: "POST" });
@@ -244,7 +253,6 @@ async function comprarProducto(id) {
     }
 }
 
-
 async function comprarTodo() {
     const idsProductos = cesta.map(p => p.id);
 
@@ -258,7 +266,7 @@ async function comprarTodo() {
         if (response.ok) {
             mostrarAlerta("Compra de todos los productos realizada con éxito.", "success");
 
-            // Vaciar la cesta después de la compra
+
             cesta = [];
             actualizarCesta();
             actualizarContadorCesta();
@@ -272,8 +280,6 @@ async function comprarTodo() {
         mostrarAlerta("Error en la compra de productos.", "danger");
     }
 }
-
-
 
 async function añadirProducto() {
     const nombre = $("#nuevo-nombre").val();
@@ -292,20 +298,19 @@ async function añadirProducto() {
             if (response.ok) {
                 mostrarAlerta("Producto añadido.", "success");
                 cargarProductos();
-                $("#form-nuevo-producto")[0].reset(); 
-                $("#nuevoProductoModal").modal("hide"); 
+                $("#form-nuevo-producto")[0].reset();
+                $("#nuevoProductoModal").modal("hide");
             } else {
                 const errorMsg = await response.text();
                 mostrarAlerta(`Error al añadir producto: ${errorMsg}`, "danger");
             }
-            
+
         } catch (error) {
             console.error("Error al añadir producto:", error);
             mostrarAlerta("Error al añadir producto.", "danger");
         }
     }
 }
-
 
 async function obtenerProducto(id) {
     try {
@@ -321,8 +326,6 @@ async function obtenerProducto(id) {
         mostrarAlerta("Error al obtener los datos del producto.", "danger");
     }
 }
-
-
 
 async function editarProducto() {
     const id = $("#editar-modal").data("id");
@@ -353,8 +356,6 @@ async function editarProducto() {
         }
     }
 }
-
-
 
 async function eliminarProducto() {
     const id = $("#eliminar-modal").data("id");

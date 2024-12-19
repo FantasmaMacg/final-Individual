@@ -1,11 +1,10 @@
 
 body {
     background-color: #f4f7fc;
-}
-
-h2 {
     font-family: 'Roboto', sans-serif;
 }
+
+
 
 #productos-lista .card {
     margin-bottom: 20px;
@@ -27,7 +26,10 @@ h2 {
 
 #gerente-section input,
 #gerente-section button {
-    margin-top: 10px;
+
+    position : center;
+
+    margin-top: center;
 }
 #cesta-lista {
     max-height: 300px;
@@ -58,3 +60,4 @@ h2 {
 body.modal-open {
     overflow: hidden;
 }
+

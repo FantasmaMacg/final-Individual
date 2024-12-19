@@ -40,7 +40,7 @@ public class ProductoControllerTest {
     void testComprarProducto() {
         controller.comprarProducto(1L);
         Producto producto = controller.getProducto(1L);
-        assertEquals(9, producto.getCantidad()); // Cantidad inicial es 10, debe decrementar en 1
+        assertEquals(9, producto.getCantidad()); 
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ProductoControllerTest {
         controller.añadirACesta(1L);
         controller.añadirACesta(2L);
         controller.comprarProductosCesta();
-        assertTrue(controller.getCesta().isEmpty()); // La cesta debe vaciarse
+        assertTrue(controller.getCesta().isEmpty()); 
         assertEquals(9, controller.getProducto(1L).getCantidad());
         assertEquals(4, controller.getProducto(2L).getCantidad());
     }
@@ -56,7 +56,7 @@ public class ProductoControllerTest {
     @Test
     void testEliminarProducto() {
         controller.eliminarProducto(1L);
-        assertNull(controller.getProducto(1L)); // Producto eliminado
+        assertNull(controller.getProducto(1L));
     }
 
     @Test
