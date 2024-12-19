@@ -60,4 +60,84 @@ body {
 body.modal-open {
     overflow: hidden;
 }
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    background-color: #6c4f3d; /* Madera oscura */
+}
+
+.navbar-brand, .nav-link, .btn-outline-light {
+    color: #f5e1a4 !important;
+}
+
+.navbar-brand:hover, .nav-link:hover, .btn-outline-light:hover {
+    color: #fff !important;
+}
+
+.text {
+    color: #3d2b1f; /* Madera más clara */
+    font-family: 'Georgia', serif;
+}
+
+.alert {
+    background-color: #f3e5ab;
+    border-color: #f3e5ab;
+}
+
+.btn-primary {
+    background-color: #3d2b1f; /* Madera clara */
+    border-color: #3d2b1f;
+}
+
+.btn-primary:hover {
+    background-color: #6c4f3d; /* Madera oscura */
+    border-color: #6c4f3d;
+}
+
+.modal-content {
+    background-color: #f9f1e7; /* Madera clara */
+}
+
+.modal-header, .modal-footer {
+    background-color: #6c4f3d; /* Madera oscura */
+    color: #f5e1a4;
+}
+
+.modal-title {
+    font-family: 'Georgia', serif;
+}
+
+.container {
+    max-width: 1000px;
+}
+
+h3 {
+    color: #3d2b1f;
+    font-family: 'Georgia', serif;
+}
+
+h5 {
+    font-size: 1.2rem;
+    line-height: 1.6;
+}
+
+.row {
+    margin-top: 30px;
+}
+
+#productos-lista .col-md-4 {
+    margin-bottom: 20px;
+}
+
+/* Botón carrito */
+.btn-outline-light i {
+    font-size: 1.2rem;
+}
+
+.badge {
+    background-color: #ff5733; /* Rojo artesanal */
+}
 
