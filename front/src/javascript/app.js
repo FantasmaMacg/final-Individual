@@ -212,22 +212,22 @@ async function cargarProductos() {
             `;
 
             const productoCard = `
-                <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            <h5 class="card-title">${producto.nombre}</h5>
-                            <p class="card-text">${producto.descripcion}</p>
-                            <p class="card-text">
-                                         <strong>${new Intl.NumberFormat('de-DE').format(producto.precio.toFixed(2))} €</strong>
-                                                                            </p>
-
-                            <p class="card-text">Cantidad: ${producto.cantidad}</p>
-                            <div class="d-grid gap-2">
-                                ${acciones}
-                            </div>
-                        </div>
-                    </div>
+               <div class="col-lg-3 col-md-4 col-sm-6 mb-4 producto-card">
+             <div class="card shadow-sm">
+                 <div class="card-body">
+            <h5 class="card-title">${producto.nombre}</h5>
+            <p class="card-text descripcion">${producto.descripcion}</p>
+            <p class="card-text">
+                <strong>${new Intl.NumberFormat('de-DE').format(producto.precio.toFixed(2))} €</strong>
+            </p>
+            <p class="card-text">Cantidad: ${producto.cantidad}</p>
+            <div class="d-grid gap-2">
+                ${acciones}
+                 </div>
                 </div>
+                </div>
+            </div>
+
             `;
             $productosLista.append(productoCard);
         });

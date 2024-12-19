@@ -3,26 +3,107 @@ body {
     background-color: #f4f7fc;
     font-family: 'Roboto', sans-serif;
 }
-
-
-
-#productos-lista .card {
-    margin-bottom: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.navbar-brand {
+    font-family: 'Poppins', sans-serif;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #fff;
+    position: relative;
+    animation: glow 2s ease-out, slide-in 1.5s ease-out;
+    animation-fill-mode: forwards; /* Para que se mantenga en el estado final de la animación */
+    text-shadow: 0 0 5px #ff9, 0 0 10px #ff9, 0 0 15px #ffa, 0 0 20px #ffc, 0 0 25px #ffd;
 }
 
-#productos-lista .card img {
-    max-height: 250px;
-    object-fit: cover;
-}
-
-.card-body {
-    text-align: center;
-}
-
-.card-body button {
+.navbar-brand::after {
+    content: "";
+    position: absolute;
     width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #ff9, #ff6, #ffa, #ffd, #ff9);
+    bottom: -5px;
+    left: 0;
+    animation: slide-bar 2s ease-out;
+    animation-fill-mode: forwards; /* Mantiene la barra en su posición final */
+    border-radius: 2px;
 }
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 5px #ff9, 0 0 10px #ff9, 0 0 15px #ffa, 0 0 20px #ffc, 0 0 25px #ffd;
+    }
+    50% {
+        text-shadow: 0 0 10px #ffc, 0 0 20px #ffd, 0 0 30px #ffe, 0 0 40px #fff, 0 0 50px #ff9; /* Brillo intenso */
+    }
+    100% {
+        text-shadow: none;
+    }
+}
+
+@keyframes slide-in {
+    0% {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-bar {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(0); 
+    }
+}
+
+.producto-card .card-body {
+    position: relative;
+    overflow: hidden; 
+    height: 250px; 
+}
+
+
+.producto-card .card-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Descripción oculta inicialmente */
+.producto-card .descripcion {
+    display: block;
+    height: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+/* Estilo de expansión de la tarjeta al pasar el ratón */
+.producto-card:hover .card-body {
+    height: auto; /* Expande la tarjeta */
+}
+
+/* Mostrar la descripción al pasar el ratón */
+.producto-card:hover .descripcion {
+    height: auto; /* Hacer que la descripción se vea */
+    opacity: 1;
+}
+
+/* Mostrar el título completo al hacer clic */
+.producto-card .card-title.expand {
+    white-space: normal; /* Permite que el título ocupe varias líneas */
+}
+
+/* Agregar animación al título al hacer clic */
+.producto-card .card-title {
+    transition: all 0.3s ease;
+}
+
+
 
 #gerente-section input,
 #gerente-section button {
