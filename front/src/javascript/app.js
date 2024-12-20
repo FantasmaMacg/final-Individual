@@ -286,8 +286,8 @@ async function añadirProducto() {
     const descripcion = $("#nuevo-descripcion").val();
     const precio = parseFloat($("#editar-precios").val());
     const cantidad = parseInt($("#editar-cantidades").val());
-
-    if (nombre && descripcion && !isNaN(precio) && !isNaN(cantidad)) {
+    
+    if (nombre.trim() && descripcion.trim() && !isNaN(precio) && precio > 0 && precio > 0 && !isNaN(cantidad) && cantidad >= 0) {
         try {
             const response = await fetch("api/productos", {
                 method: "POST",
@@ -334,7 +334,7 @@ async function editarProducto() {
     const precio = parseFloat($("#editar-precio").val());
     const cantidad = parseInt($("#editar-cantidad").val());
 
-    if (nombre && descripcion && !isNaN(precio) && !isNaN(cantidad)) {
+    if (nombre.trim() && descripcion.trim() && !isNaN(precio) && precio > 0 && precio > 0 && !isNaN(cantidad) && cantidad >= 0) {
         try {
             const response = await fetch(`api/productos/${id}`, {
                 method: "PUT",
